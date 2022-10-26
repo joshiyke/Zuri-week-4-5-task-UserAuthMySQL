@@ -28,7 +28,7 @@
      <h1 class="">
        Welcome to Zuri Authentication 
        <?php session_start();
-        if(isset($_SESSION)){ echo $_SESSION['username'];} ?>
+        if(isset($_SESSION)){ echo $_SESSION['email'];} ?>
     </h1>
 
      <form action="php/action.php" method="GET">
