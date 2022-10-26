@@ -7,6 +7,37 @@ function registerUser($fullnames, $email, $password, $gender, $country){
     //create a connection variable using the db function in config.php
     $conn = db();
    //check if user with this email already exist in the database
+    $sql = "SELECT * FROM students WHERE email = '$email'";
+    $result = mysqli_query($conn, $sql);
+
+    if($result){
+        $num = mysqli_num_rows($result);
+        if($num > 0){
+            $message = "User aleady exist, please change the User Details";
+            echo "<script>
+            alert('$message');
+            window.location.href='../forms/register.html';
+            </script>";
+            exit;  
+        }else{
+            //if the email does not exist in the database store all the data in the database as a new user
+            $sql = "INSERT INTO students (full_names, country, email, gender, password) VALUES ('$fullnames', '$country', '$email', '$gender', '$password')";
+
+            $result = mysqli_query($conn, $sql);
+
+            if($result){
+                $message = "Congratulations, Your Registration is Successful, Now login in";
+                echo "<script>
+                alert('$message');
+                window.location.href='../forms/login.html';
+                </script>";
+                exit;
+            }else{
+                echo "fail";
+            }
+
+        }
+    }
 }
 
 
@@ -15,10 +46,41 @@ function loginUser($email, $password){
     //create a connection variable using the db function in config.php
     $conn = db();
 
-    echo "<h1 style='color: red'> LOG ME IN (IMPLEMENT ME) </h1>";
+    //echo "<h1 style='color: red'> LOG ME IN (IMPLEMENT ME) </h1>";
     //open connection to the database and check if username exist in the database
     //if it does, check if the password is the same with what is given
-    //if true then set user session for the user and redirect to the dasbboard
+
+    $sql = "SELECT * FROM students WHERE email = '$email' AND password = '$password'";
+
+    $result = mysqli_query($conn, $sql);
+
+    if($result){
+        $num = mysqli_num_rows($result);
+        if($num > 0){
+            //if true then set user session for the user and redirect to the dasbboard
+
+            session_start();
+            $_SESSION['email'] = $email;
+
+            $message = "Login successful";
+            echo "<script>
+            alert('$message');
+            window.location.href='../dashboard.php';
+            </script>";
+            exit;  
+
+
+        }else{
+            $message = "Invalid details please try again";
+            echo "<script>
+            alert('$message');
+            window.location.href='../forms/login.html';
+            </script>";
+            exit; 
+        }
+    }
+
+
 }
 
 
@@ -32,7 +94,7 @@ function resetPassword($email, $password){
 
 function getusers(){
     $conn = db();
-    $sql = "SELECT * FROM Students";
+    $sql = "SELECT * FROM students";
     $result = mysqli_query($conn, $sql);
     echo"<html>
     <head></head>
